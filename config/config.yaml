@@ -1,0 +1,18 @@
+server:
+  port: 8080
+des:
+  key: sfe023fa
+mysql:
+  dsn: "root:123456@tcp(localhost:3306)/management_platform?charset=utf8&parseTime=True&loc=Local"
+  # 数据库连接池最大空闲数量
+  max-idle-conn: 10
+  # 数据库连接池最大连接数
+  max-open-conn: 100
+  # 数据库连接可复用的最大时间(小时)
+  max-life-time: 1
+
+redis:
+  database: 0
+  host: 127.0.0.1
+  port: 6379
+version: "v0.0.1"
