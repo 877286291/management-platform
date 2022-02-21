@@ -1,7 +1,9 @@
 package service
 
 import (
+	"encoding/base64"
 	"errors"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"management-platform/db"
 	"management-platform/model"
@@ -27,17 +29,17 @@ func GetSystemUserInfoById(id string) (model.SystemUser, error) {
 	return systemUser, nil
 }
 func AddSystemUser(systemUser *model.SystemUser) (bool, error) {
-	//id := uuid.New().String()
-	//systemUser.ID = id
-	encodePassword, err := util.DesEncrypt([]byte(systemUser.LoginPassword))
+	id := uuid.New().String()
+	systemUser.ID = id
+	password, err := util.DesEncrypt([]byte(systemUser.LoginPassword))
 	if err != nil {
 		return false, err
 	}
-	systemUser.LoginPassword = string(encodePassword)
+	encodePassword := base64.StdEncoding.EncodeToString(password)
+	systemUser.LoginPassword = encodePassword
 	systemUser.CreateTime = time.Now().Format("2006-01-02 15:04:05")
-	result := db.Conn.Create(systemUser)
-	if result.RowsAffected > 0 {
-		return true, nil
+	if err := db.Conn.Create(systemUser).Error; err != nil {
+		return false, err
 	}
-	return false, nil
+	return true, nil
 }

@@ -1,17 +1,17 @@
 package model
 
 type SystemUser struct {
-	ID               string `gorm:"column:id;default:-" db:"id" json:"id,omitempty" form:"id"`                                         //  主键id
-	Type             string `gorm:"column:type" db:"type" json:"type,omitempty" form:"type"`                                                            //  类型
-	LoginName        string `gorm:"column:login_name" db:"login_name" json:"login_name,omitempty" form:"login_name" binding:"required"`                 //  登录名称
-	LoginPassword    string `gorm:"column:login_password" db:"login_password" json:"login_password,omitempty" form:"login_password" binding:"required"` //  登录密码
-	Name             string `gorm:"column:name" db:"name" json:"name,omitempty" form:"name" binding:"required"`                                         //  姓名
-	Sex              string `gorm:"column:sex" db:"sex" json:"sex,omitempty" form:"sex"`                                                                //  性别
-	Phone            string `gorm:"column:phone" db:"phone" json:"phone,omitempty" form:"phone"`                                                        //  手机号
-	Email            string `gorm:"column:email" db:"email" json:"email,omitempty" form:"email"`                                                        //  电子邮箱
-	BirthDate        string `gorm:"column:birth_date" db:"birth_date" json:"birth_date,omitempty" form:"birth_date"`                                    //  出生日期
-	LiveAddress      string `gorm:"column:live_address" db:"live_address" json:"live_address,omitempty" form:"live_address"`                            //  居住地
-	HeadAddress      string `gorm:"column:head_address" db:"head_address" json:"head_address,omitempty" form:"head_address"`                            //  头像地址
+	ID               string `gorm:"column:id" db:"id" json:"id,omitempty" form:"id"`                                                 //  主键id
+	Type             string `gorm:"column:type" db:"type" json:"type,omitempty" form:"type"`                                         //  类型
+	LoginName        string `gorm:"column:login_name" db:"login_name" json:"login_name,omitempty" form:"login_name"`                 //  登录名称
+	LoginPassword    string `gorm:"column:login_password" db:"login_password" json:"login_password,omitempty" form:"login_password"` //  登录密码
+	Name             string `gorm:"column:name" db:"name" json:"name,omitempty" form:"name"`                                         //  姓名
+	Sex              string `gorm:"column:sex" db:"sex" json:"sex,omitempty" form:"sex"`                                             //  性别
+	Phone            string `gorm:"column:phone" db:"phone" json:"phone,omitempty" form:"phone"`                                     //  手机号
+	Email            string `gorm:"column:email" db:"email" json:"email,omitempty" form:"email"`                                     //  电子邮箱
+	BirthDate        string `gorm:"column:birth_date" db:"birth_date" json:"birth_date,omitempty" form:"birth_date"`                 //  出生日期
+	LiveAddress      string `gorm:"column:live_address" db:"live_address" json:"live_address,omitempty" form:"live_address"`         //  居住地
+	HeadAddress      string `gorm:"column:head_address" db:"head_address" json:"head_address,omitempty" form:"head_address"`         //  头像地址
 	LastLoginTime    string `gorm:"column:last_login_time" db:"last_login_time" json:"last_login_time,omitempty" form:"last_login_time"`
 	Browser          string `gorm:"column:browser" db:"browser" json:"browser,omitempty" form:"browser"`
 	Os               string `gorm:"column:os" db:"os" json:"os,omitempty" form:"os"`
