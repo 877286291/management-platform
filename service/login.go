@@ -2,27 +2,29 @@ package service
 
 import (
 	"encoding/base64"
-	"errors"
-	"gorm.io/gorm"
-	"management-platform/model"
 	"management-platform/model/request"
-	"management-platform/util"
+	"management-platform/repository"
+	"management-platform/utils"
 )
-import "management-platform/db"
 
-func Login(loginRequest request.LoginRequest) (bool, error) {
-	var systemUser model.SystemUser
-	result, err := util.DesEncrypt([]byte(loginRequest.LoginPassword))
+type IAuthService interface {
+	Login(loginRequest request.LoginRequest) (bool, error)
+}
+type AuthService struct {
+	UserRepo repository.ISysUserRepo `inject:""`
+}
+
+func (service *AuthService) Login(loginRequest request.LoginRequest) (bool, error) {
+	result, err := utils.DesEncrypt([]byte(loginRequest.LoginPassword))
 	if err != nil {
 		return false, err
 	}
 	loginPassword := base64.StdEncoding.EncodeToString(result)
-	err = db.Conn.Where("login_name=? and login_password=?", loginRequest.LoginName, loginPassword).Take(&systemUser).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return false, nil
-	} else if err != nil {
+	row, err := service.UserRepo.CheckUser(loginRequest.LoginName, loginPassword)
+	if err != nil {
 		return false, err
+	} else if !row {
+		return false, nil
 	}
 	return true, nil
-
 }

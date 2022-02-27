@@ -8,20 +8,18 @@ import (
 	"net/http"
 )
 
-func AuthRouterRegister(routerGroup *gin.RouterGroup) {
-	authRouter := routerGroup.Group("/auth")
-	{
-		authRouter.POST("/login", loginHandler)
-	}
+type Auth struct {
+	AuthService service.IAuthService `inject:""`
 }
-func loginHandler(ctx *gin.Context) {
+
+func (auth *Auth) Login(ctx *gin.Context) {
 	var loginRequest request.LoginRequest
 	err := ctx.ShouldBindJSON(&loginRequest)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, response.Err.WithMsg("请求参数错误").WithErrMsg(err))
 		return
 	}
-	isSuccess, err := service.Login(loginRequest)
+	isSuccess, err := auth.AuthService.Login(loginRequest)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, response.Err.WithErrMsg(err))
 		return

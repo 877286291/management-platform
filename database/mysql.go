@@ -1,4 +1,4 @@
-package db
+package database
 
 import (
 	"database/sql"
@@ -8,19 +8,24 @@ import (
 	"time"
 )
 
-var sqlDB *sql.DB
-var Conn *gorm.DB
+type IMysql interface {
+	Connect() error
+	DB() *gorm.DB
+}
+type Mysql struct {
+	Conn *gorm.DB
+}
 
-func InitMysqlConn() {
+func (m *Mysql) Connect() error {
+	var sqlDB *sql.DB
 	dsn := config.Config.Mysql.Dsn
-	//var err error
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic(err)
+		return err
 	}
 	sqlDB, err = db.DB()
 	if err != nil {
-		panic(err)
+		return err
 	}
 	// 设置空闲连接池中连接的最大数量
 	sqlDB.SetMaxIdleConns(config.Config.Mysql.MaxIdleConn)
@@ -30,5 +35,9 @@ func InitMysqlConn() {
 
 	// 设置了连接可复用的最大时间。
 	sqlDB.SetConnMaxLifetime(time.Hour * config.Config.Mysql.ConnMaxLifetime)
-	Conn = db.Debug()
+	m.Conn = db.Debug()
+	return nil
+}
+func (m Mysql) DB() *gorm.DB {
+	return m.Conn
 }

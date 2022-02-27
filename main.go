@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/viper"
 	"log"
 	"management-platform/config"
-	"management-platform/db"
 	"management-platform/router"
 )
 
@@ -25,9 +24,9 @@ func main() {
 			panic(fmt.Errorf("unmarshal conf failed, err:%s \n", err))
 		}
 	})
-	// 初始化数据连接
-	db.InitMysqlConn()
-	if err := router.InitRouter(); err != nil {
+	engine := router.InitRouter()
+	err := engine.Run(fmt.Sprintf(":%d", config.Config.Server.Port))
+	if err != nil {
 		log.Fatal("server start failed...")
 	}
 }

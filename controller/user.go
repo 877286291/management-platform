@@ -1,29 +1,22 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"management-platform/model"
 	"management-platform/model/response"
 	"management-platform/service"
 	"net/http"
+	"strconv"
 )
 
-func SystemUserRouterRegister(routerGroup *gin.RouterGroup) {
-	systemUserRouter := routerGroup.Group("/users")
-	{
-		systemUserRouter.GET("/", getSystemUserListHandler)
-		systemUserRouter.GET("/:id", getSystemUserInfoByIdHandler)
-		systemUserRouter.POST("/add", addSystemUserHandler)
-	}
+type SysUser struct {
+	UserService service.ISysUserService `inject:""`
 }
 
-// 通过ID获取系统用户信息
-func getSystemUserInfoByIdHandler(ctx *gin.Context) {
+// GetSystemUserInfoById 通过ID获取系统用户信息
+func (sysUser *SysUser) GetSystemUserInfoById(ctx *gin.Context) {
 	id := ctx.Param("id")
-	zap.L().Info(fmt.Sprintf("查询系统用户ID:%s", id))
-	systemUser, err := service.GetSystemUserInfoById(id)
+	systemUser, err := sysUser.UserService.GetSysUserById(id)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, response.Err.WithMsg("获取用户信息失败").WithErrMsg(err))
 		return
@@ -31,14 +24,24 @@ func getSystemUserInfoByIdHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response.OK.WithMsg("获取用户信息成功").WithData(systemUser))
 }
 
-// 获取系统用户列表
-func getSystemUserListHandler(ctx *gin.Context) {
-	wrapper := model.NewSystemUser()
-	if err := ctx.ShouldBindQuery(wrapper); err != nil {
+// GetSystemUserList 获取系统用户列表
+func (sysUser *SysUser) GetSystemUserList(ctx *gin.Context) {
+	where := model.NewSystemUser()
+	if err := ctx.ShouldBindQuery(where); err != nil {
 		ctx.JSON(http.StatusBadRequest, response.Err.WithMsg("请求参数错误").WithErrMsg(err))
 		return
 	}
-	systemUserList, err := service.GetUserList(wrapper)
+	page, err := strconv.Atoi(ctx.DefaultQuery("page", "0"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, response.Err.WithMsg("请求参数错误").WithErrMsg(err))
+		return
+	}
+	size, err := strconv.Atoi(ctx.DefaultQuery("size", "10"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, response.Err.WithMsg("请求参数错误").WithErrMsg(err))
+	}
+	total := new(int64)
+	systemUserList, err := sysUser.UserService.GetSysUserList(page, size, total, where)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, response.Err.WithMsg("获取用户列表失败").WithErrMsg(err))
 		return
@@ -46,14 +49,14 @@ func getSystemUserListHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response.OK.WithMsg("获取用户列表成功").WithData(systemUserList))
 }
 
-// 添加用户
-func addSystemUserHandler(ctx *gin.Context) {
+// AddSystemUserHandler 添加用户
+func (sysUser *SysUser) AddSystemUserHandler(ctx *gin.Context) {
 	systemUser := model.NewSystemUser()
 	if err := ctx.ShouldBindJSON(systemUser); err != nil {
 		ctx.JSON(http.StatusBadRequest, response.Err.WithMsg("请求参数错误").WithErrMsg(err))
 		return
 	}
-	result, err := service.AddSystemUser(systemUser)
+	result, err := sysUser.UserService.AddSystemUser(systemUser)
 	if err != nil {
 		ctx.JSON(http.StatusOK, response.OK.WithMsg("用户添加失败").WithErrMsg(err))
 		return
