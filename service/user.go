@@ -42,7 +42,7 @@ func (service *SysUserService) AddSystemUser(systemUser *model.SystemUser) (bool
 	encodePassword := base64.StdEncoding.EncodeToString(password)
 	systemUser.LoginPassword = encodePassword
 	systemUser.CreateTime = time.Now().Format("2006-01-02 15:04:05")
-	user, err := service.AddSystemUser(systemUser)
+	user, err := service.UserRepo.InsertUser(systemUser)
 	if err != nil {
 		return false, err
 	}
