@@ -49,8 +49,8 @@ func (sysUser *SysUser) GetSystemUserList(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response.OK.WithMsg("获取用户列表成功").WithData(systemUserList))
 }
 
-// AddSystemUserHandler 添加用户
-func (sysUser *SysUser) AddSystemUserHandler(ctx *gin.Context) {
+// AddSystemUser 添加用户
+func (sysUser *SysUser) AddSystemUser(ctx *gin.Context) {
 	systemUser := model.NewSystemUser()
 	if err := ctx.ShouldBindJSON(systemUser); err != nil {
 		ctx.JSON(http.StatusBadRequest, response.Err.WithMsg("请求参数错误").WithErrMsg(err))
@@ -58,12 +58,45 @@ func (sysUser *SysUser) AddSystemUserHandler(ctx *gin.Context) {
 	}
 	result, err := sysUser.UserService.AddSystemUser(systemUser)
 	if err != nil {
-		ctx.JSON(http.StatusOK, response.OK.WithMsg("用户添加失败").WithErrMsg(err))
+		ctx.JSON(http.StatusInternalServerError, response.Err.WithMsg("用户添加失败").WithErrMsg(err))
 		return
 	}
 	if result {
 		ctx.JSON(http.StatusOK, response.OK.WithMsg("用户添加成功"))
 		return
 	}
-	ctx.JSON(http.StatusOK, response.OK.WithMsg("用户添加失败"))
+	ctx.JSON(http.StatusOK, response.Err.WithMsg("用户添加失败"))
+}
+func (sysUser *SysUser) DeleteSystemUser(ctx *gin.Context) {
+	id := ctx.Param("id")
+	result, err := sysUser.UserService.DeleteSystemUser(id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, response.OK.WithMsg("用户删除成功"))
+		return
+	}
+	if result {
+		ctx.JSON(http.StatusOK, response.OK.WithMsg("用户删除成功"))
+		return
+	}
+	ctx.JSON(http.StatusOK, response.Err.WithMsg("用户删除失败"))
+}
+
+func (sysUser *SysUser) UpdateSystemUser(ctx *gin.Context) {
+	id := ctx.Param("id")
+	systemUser := model.NewSystemUser()
+	err := ctx.ShouldBindJSON(systemUser)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, response.Err.WithMsg("请检查请求参数").WithErrMsg(err))
+		return
+	}
+	result, err := sysUser.UserService.UpdateSystemUser(id, systemUser)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, response.OK.WithMsg("更新用户失败").WithErrMsg(err))
+		return
+	}
+	if result {
+		ctx.JSON(http.StatusOK, response.OK.WithMsg("更新用户成功"))
+		return
+	}
+
 }

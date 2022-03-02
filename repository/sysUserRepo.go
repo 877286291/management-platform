@@ -9,7 +9,7 @@ type ISysUserRepo interface {
 	GetUserByLoginName(loginName string) (*model.SystemUser, error)
 	CheckUser(loginName, password string) (bool, error)
 	InsertUser(user *model.SystemUser) (bool, error)
-	UpdateUser(user *model.SystemUser) (bool, error)
+	UpdateUser(id string, user *model.SystemUser) (bool, error)
 	DeleteUser(id string) (bool, error)
 	ListUser(page, size int, total *int64, where interface{}) ([]*model.SystemUser, error)
 	EnableUser(userId int32) (bool, error)
@@ -53,8 +53,8 @@ func (repo *SysUserRepo) InsertUser(user *model.SystemUser) (bool, error) {
 	return true, nil
 }
 
-func (repo *SysUserRepo) UpdateUser(user *model.SystemUser) (bool, error) {
-	if err := repo.BaseRepo.Conn.DB().Model(&user).Updates(user).Error; err != nil {
+func (repo *SysUserRepo) UpdateUser(id string, user *model.SystemUser) (bool, error) {
+	if err := repo.BaseRepo.Conn.DB().Model(&user).Where("id = ?", id).Updates(user).Error; err != nil {
 		return false, err
 	}
 	return true, nil

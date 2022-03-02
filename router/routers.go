@@ -1,7 +1,6 @@
 package router
 
 import (
-	"fmt"
 	"github.com/facebookgo/inject"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
@@ -47,7 +46,6 @@ func Inject(router *gin.Engine) {
 	if err := conn.Connect(); err != nil {
 		log.Fatal("database fatal:", err)
 	}
-	fmt.Println(conn.Conn)
 	v1 := router.Group("/v1")
 	authRouter := v1.Group("/auth")
 	{
@@ -57,6 +55,8 @@ func Inject(router *gin.Engine) {
 	{
 		systemUserRouter.GET("/", user.GetSystemUserList)
 		systemUserRouter.GET("/:id", user.GetSystemUserInfoById)
-		systemUserRouter.POST("/add", user.AddSystemUserHandler)
+		systemUserRouter.POST("/", user.AddSystemUser)
+		systemUserRouter.DELETE("/:id", user.DeleteSystemUser)
+		systemUserRouter.PUT("/:id", user.UpdateSystemUser)
 	}
 }

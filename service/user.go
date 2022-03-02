@@ -13,6 +13,8 @@ type ISysUserService interface {
 	GetSysUserById(id string) (*model.SystemUser, error)
 	GetSysUserList(page, size int, total *int64, where interface{}) ([]*model.SystemUser, error)
 	AddSystemUser(systemUser *model.SystemUser) (bool, error)
+	DeleteSystemUser(id string) (bool, error)
+	UpdateSystemUser(id string, systemUser *model.SystemUser) (bool, error)
 }
 type SysUserService struct {
 	UserRepo repository.ISysUserRepo `inject:""`
@@ -42,12 +44,25 @@ func (service *SysUserService) AddSystemUser(systemUser *model.SystemUser) (bool
 	encodePassword := base64.StdEncoding.EncodeToString(password)
 	systemUser.LoginPassword = encodePassword
 	systemUser.CreateTime = time.Now().Format("2006-01-02 15:04:05")
-	user, err := service.UserRepo.InsertUser(systemUser)
+	result, err := service.UserRepo.InsertUser(systemUser)
 	if err != nil {
 		return false, err
 	}
-	if !user {
-		return false, nil
+	return result, nil
+}
+func (service *SysUserService) DeleteSystemUser(id string) (bool, error) {
+	result, err := service.UserRepo.DeleteUser(id)
+	if err != nil {
+		return false, err
 	}
-	return true, nil
+	return result, nil
+}
+func (service *SysUserService) UpdateSystemUser(id string, systemUser *model.SystemUser) (bool, error) {
+	// TODO: add create user
+	systemUser.CreateTime = time.Now().Format("2006-01-02 15:04:05")
+	result, err := service.UserRepo.UpdateUser(id, systemUser)
+	if err != nil {
+		return false, err
+	}
+	return result, nil
 }
