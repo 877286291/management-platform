@@ -29,12 +29,11 @@ type SystemUser struct {
 	BranchLeader     string `gorm:"column:branch_leader" database:"branch_leader" json:"branch_leader,omitempty" form:"branch_leader"`
 	Token            string `gorm:"column:token" database:"token" json:"token,omitempty" form:"token"`
 	TokenRefreshTime string `gorm:"column:token_refresh_time" database:"token_refresh_time" json:"token_refresh_time,omitempty" form:"token_refresh_time"`
-	Remark           string `gorm:"column:remark" database:"remark" json:"remark,omitempty" form:"remark"`                                     //  备注
-	CreateTime       string `gorm:"column:create_time" database:"create_time" json:"create_time,omitempty" form:"create_time"`                 //  创建时间
-	CreateUser       string `gorm:"column:create_user" database:"create_user" json:"create_user,omitempty" form:"create_user"`                 //  创建人
-	CreateOrganize   string `gorm:"column:create_organize" database:"create_organize" json:"create_organize,omitempty" form:"create_organize"` //  创建组织
-	UpdateUser       string `gorm:"column:update_user" database:"update_user" json:"update_user,omitempty" form:"update_user"`                 //  修改人
-	UpdateTime       string `gorm:"column:update_time" database:"update_time" json:"update_time,omitempty" form:"update_time"`                 //  修改时间
+	Remark           string `gorm:"column:remark" database:"remark" json:"remark,omitempty" form:"remark"`                     //  备注
+	CreateTime       string `gorm:"column:create_time" database:"create_time" json:"create_time,omitempty" form:"create_time"` //  创建时间
+	CreateUser       string `gorm:"column:create_user" database:"create_user" json:"create_user,omitempty" form:"create_user"` //  创建人
+	UpdateUser       string `gorm:"column:update_user" database:"update_user" json:"update_user,omitempty" form:"update_user"` //  修改人
+	UpdateTime       string `gorm:"column:update_time" database:"update_time" json:"update_time,omitempty" form:"update_time"` //  修改时间
 	BirthAddress     string `gorm:"column:birth_address" database:"birth_address" json:"birth_address,omitempty" form:"birth_address"`
 	Motto            string `gorm:"column:motto" database:"motto" json:"motto,omitempty" form:"motto"`
 }
