@@ -28,6 +28,7 @@ func Inject(router *gin.Engine) {
 	var conn database.Mysql
 	var auth controller.Auth
 	var user controller.SysUser
+	var role controller.SysRole
 	var injector inject.Graph
 	if err := injector.Provide(
 		&inject.Object{Value: &conn},
@@ -37,6 +38,9 @@ func Inject(router *gin.Engine) {
 		&inject.Object{Value: &user},
 		&inject.Object{Value: &service.SysUserService{}},
 		&inject.Object{Value: &repository.SysUserRepo{}},
+		&inject.Object{Value: &role},
+		&inject.Object{Value: &service.SysRoleService{}},
+		&inject.Object{Value: &repository.SysRoleRepo{}},
 	); err != nil {
 		log.Fatal("inject fatal: ", err)
 	}
@@ -58,5 +62,12 @@ func Inject(router *gin.Engine) {
 		systemUserRouter.POST("/", user.AddSystemUser)
 		systemUserRouter.DELETE("/:id", user.DeleteSystemUser)
 		systemUserRouter.PUT("/:id", user.UpdateSystemUser)
+	}
+	systemRoleRouter := v1.Group("/roles")
+	{
+		systemRoleRouter.GET("/", role.GetRoleList)
+		systemRoleRouter.POST("/", role.AddSystemRole)
+		systemRoleRouter.DELETE("/:id", role.DeleteSystemRole)
+		systemRoleRouter.PUT("/:id", role.UpdateSystemRole)
 	}
 }

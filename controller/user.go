@@ -39,6 +39,7 @@ func (sysUser *SysUser) GetSystemUserList(ctx *gin.Context) {
 	size, err := strconv.Atoi(ctx.DefaultQuery("size", "10"))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, response.Err.WithMsg("请求参数错误").WithErrMsg(err))
+		return
 	}
 	total := new(int64)
 	systemUserList, err := sysUser.UserService.GetSysUserList(page, size, total, where)
@@ -98,5 +99,5 @@ func (sysUser *SysUser) UpdateSystemUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, response.OK.WithMsg("更新用户成功"))
 		return
 	}
-
+	ctx.JSON(http.StatusOK, response.Err.WithMsg("更新用户失败"))
 }

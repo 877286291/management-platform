@@ -3,7 +3,7 @@ server:
 des:
   key: sfe023fa
 mysql:
-  dsn: "root:123456@tcp(localhost:3306)/management_platform?charset=utf8mb4&parseTime=True&loc=Local"
+  dsn: "root:Hyj877286291@tcp(101.43.77.220:3306)/management_platform?charset=utf8mb4&parseTime=True&loc=Local"
   # 数据库连接池最大空闲数量
   max-idle-conn: 10
   # 数据库连接池最大连接数
