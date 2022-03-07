@@ -12,9 +12,9 @@ type ISysUserRepo interface {
 	UpdateUser(id string, user *model.SystemUser) (bool, error)
 	DeleteUser(id string) (bool, error)
 	ListUser(page, size int, total *int64, where interface{}) ([]*model.SystemUser, error)
-	EnableUser(userId int32) (bool, error)
-	//SaveUserRole(userId, roleId int32) (bool, error)
-	//DelUserRole(userId int32) (bool, error)
+	EnableUser(userId string) (bool, error)
+	SaveUserRole(userId, roleId string) (bool, error)
+	DelUserRole(userId string) (bool, error)
 }
 type SysUserRepo struct {
 	BaseRepo *BaseRepo `inject:""`
@@ -78,23 +78,23 @@ func (repo *SysUserRepo) ListUser(page, size int, total *int64, where interface{
 	return users, nil
 }
 
-func (repo *SysUserRepo) EnableUser(userId int32) (bool, error) {
+func (repo *SysUserRepo) EnableUser(userId string) (bool, error) {
 	if err := repo.BaseRepo.Conn.DB().Exec("update system_user set is_enable = abs(is_enable - 1) where user_id = ?", userId).Error; err != nil {
 		return false, err
 	}
 	return true, nil
 }
 
-//func (repo *SysUserRepo) SaveUserRole(userId, roleId int32) (bool, error) {
-//	if err := repo.BaseRepo.Conn.Exec("insert into t_sys_user_role(user_id, role_id) values (?, ?)", userId, roleId).Error; err != nil {
-//		return false, err
-//	}
-//	return true, nil
-//}
-//
-//func (repo *SysUserRepo) DelUserRole(userId int32) (bool, error) {
-//	if err := repo.BaseRepo.Conn.Exec("delete from t_sys_user_role where user_id = ?", userId).Error; err != nil {
-//		return false, err
-//	}
-//	return true, nil
-//}
+func (repo *SysUserRepo) SaveUserRole(userId, roleId string) (bool, error) {
+	if err := repo.BaseRepo.Conn.DB().Exec("insert into system_user_role(user_id, role_id) values (?, ?)", userId, roleId).Error; err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+func (repo *SysUserRepo) DelUserRole(userId string) (bool, error) {
+	if err := repo.BaseRepo.Conn.DB().Exec("delete from system_user_role where user_id = ?", userId).Error; err != nil {
+		return false, err
+	}
+	return true, nil
+}
