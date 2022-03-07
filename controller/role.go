@@ -35,7 +35,7 @@ func (service *SysRole) GetRoleList(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, response.Err.WithMsg("获取角色列表失败").WithErrMsg(err))
 		return
 	}
-	ctx.JSON(http.StatusOK, response.OK.WithMsg("获取角色列表成功").WithData(roles))
+	ctx.JSON(http.StatusOK, response.OK.WithMsg("获取角色列表成功").WithData(roles).WithPagination(&page, &size, total))
 }
 func (service *SysRole) AddSystemRole(ctx *gin.Context) {
 	systemRole := new(model.SystemRole)

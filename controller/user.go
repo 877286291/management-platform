@@ -47,7 +47,7 @@ func (sysUser *SysUser) GetSystemUserList(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, response.Err.WithMsg("获取用户列表失败").WithErrMsg(err))
 		return
 	}
-	ctx.JSON(http.StatusOK, response.OK.WithMsg("获取用户列表成功").WithData(systemUserList))
+	ctx.JSON(http.StatusOK, response.OK.WithMsg("获取用户列表成功").WithData(systemUserList).WithPagination(&page, &size, total))
 }
 
 // AddSystemUser 添加用户

@@ -3,10 +3,14 @@ package response
 import "encoding/json"
 
 type Response struct {
-	Code   int         `json:"code"`   // 错误码
-	Msg    string      `json:"msg"`    // 错误描述
-	Data   interface{} `json:"data"`   // 返回数据
-	ErrMsg interface{} `json:"errMsg"` // 错误信息
+	Code   int         `json:"code"` // 错误码
+	Msg    string      `json:"msg"`  // 错误描述
+	Data   interface{} `json:"data"` // 返回数据
+	Size   *int        `json:"size,omitempty"`
+	Page   *int        `json:"page,omitempty"`
+	Total  *int64      `json:"total,omitempty"`
+	ErrMsg interface{} `json:"errMsg,omitempty"` // 错误信息
+
 }
 
 func (r Response) WithMsg(message string) Response {
@@ -31,6 +35,17 @@ func (r Response) WithErrMsg(err error) Response {
 		Msg:    r.Msg,
 		Data:   r.Data,
 		ErrMsg: err.Error(),
+	}
+}
+func (r Response) WithPagination(page, size *int, total *int64) Response {
+	return Response{
+		Code:   r.Code,
+		Msg:    r.Msg,
+		Data:   r.Data,
+		Page:   page,
+		Size:   size,
+		Total:  total,
+		ErrMsg: r.ErrMsg,
 	}
 }
 func (r *Response) ToString() string {
